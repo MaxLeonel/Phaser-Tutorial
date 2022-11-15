@@ -6,6 +6,7 @@ class Escena extends Phaser.Scene{
     star= null;
     score = 0;
     scoreText;
+    bombs = null;
 
 
 
@@ -20,6 +21,7 @@ class Escena extends Phaser.Scene{
         { frameWidth: 32, frameHeight: 48 });
     
     }
+    
 
     create (){
         this.add.image(400, 300, 'sky');
@@ -32,8 +34,10 @@ class Escena extends Phaser.Scene{
         this.platforms.create(50, 250, 'ground');
         this.platforms.create(750, 220, 'ground');
 
-        this.player = this.physics.add.sprite(100, 450, 'dude');
+        this.bombs = this.physics.add.group();
+        
 
+        this.player = this.physics.add.sprite(100, 450, 'dude');
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
 
@@ -62,6 +66,11 @@ class Escena extends Phaser.Scene{
             repeat: 15,
             setXY:{x:12, y:0,stepX:60}
         });
+               
+
+        this.physics.add.collider(this.bombs, this.platforms);
+
+        this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
         
         this.physics.add.collider(this.player,this.platforms);
         this.physics.add.collider(this.star, this.platforms);
@@ -96,6 +105,14 @@ class Escena extends Phaser.Scene{
     }
     }
 
+    hitBomb (player, bomb){
+    this.physics.pause();
+
+    this.player.setTint(0xff0000);
+
+    this.player.anims.play('turn');
+}
+
     collectStar (player, star){
         star.disableBody(true, true);
 
@@ -108,16 +125,12 @@ class Escena extends Phaser.Scene{
             child.enableBody(true, child.x, 0, true, true);
 
         });
-
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-        var bomb = bombs.create(x, 16, 'bomb');
-        bomb.setBounce(1);
+        var bomb = this.bombs.create(x, 16, 'bomb');
+        bomb.setBounce(0.2);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-
-    }
-        
+        }        
     }
 }
 export default Escena;
