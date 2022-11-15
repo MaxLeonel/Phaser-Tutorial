@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Phaser from 'phaser';
-import Esena from './Esena';
+import Escena from './Escena';
 
 function App() {
     const [listo, setListo] = useState(false);
-
-    useState(() =>{
+    useEffect(() =>{
       var config = {
         type: Phaser.AUTO,
         width: 800,
@@ -17,19 +16,14 @@ function App() {
                 debug: false
             }
         },
-        scene:[Esena]
-
-        }
-
-      var game = new Phaser.Game(config);
-
+        scene:[Escena]
+        };
+      const game = new Phaser.Game(config);
       game.events.on("LISTO", setListo)
-
       return()=>{
         setListo(false);
         game.destroy(true);
       }
     },[listo]);
 }
-
 export default App
